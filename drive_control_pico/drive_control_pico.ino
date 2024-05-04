@@ -107,11 +107,8 @@ void setup() {
   for(int i=0; i<4; i++){
   pinMode(chanp[i], OUTPUT);
   pinMode(chand[i], OUTPUT);
-  } 
-  pinMode(in1, INPUT_PULLUP);
-  pinMode(in2, INPUT_PULLUP);
-  pinMode(in3, INPUT_PULLUP);
-  pinMode(in4, INPUT_PULLUP);
+  pinMode(chani[i], INPUT_PULLUP);  
+  }
   
 }
 
