@@ -19,6 +19,7 @@
 
 const int chanp[4]={chan1p, chan2p, chan3p, chan4p};
 const int chand[4]={chan1d, chan2d, chan3d, chan4d};
+const int chani[4]={in1, in2, in3, in4};
 
 int pw_speed=200;
 bool dir_stat[4];
