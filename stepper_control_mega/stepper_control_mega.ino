@@ -28,26 +28,50 @@ AccelStepper stepper2(AccelStepper::DRIVER, STEPPER2_STEP_PIN, STEPPER2_DIR_PIN)
 
 void setup()
 {  
+    Serial.begin(115200);
     stepper1.setMaxSpeed(1000.0);
-    stepper1.setSpeed(800.0);
-    stepper1.setAcceleration(200.0);
-    stepper1.moveTo(100);
+    stepper1.setSpeed(1000.0);
+    stepper1.setAcceleration(800.0);
+    stepper1.moveTo(800);
+    stepper1.run();
     
     stepper2.setMaxSpeed(1000.0);
-    stepper1.setSpeed(800.0);
-    stepper1.setAcceleration(200.0);
-    stepper2.moveTo(100);
+    stepper2.setSpeed(1000.0);
+    stepper2.setAcceleration(800.0);
+    stepper2.moveTo(800);
+    stepper2.run();
+    
 }
 
 void loop()
-{
-    // Change direction at the limits
-    if (stepper1.distanceToGo() == 0)
+{   /*
+    
+    stepper1.moveTo(800);
+    stepper1.run();
+    
+    stepper2.moveTo(800);
+    stepper2.run();
+    delay(2000);
+    
+    stepper1.moveTo(0);
+    stepper1.run();
+    
+    stepper2.moveTo(0);
+    stepper2.run();
+    delay(2000);
+    */
+     Serial.print("1: d_to_go:"); Serial.print(stepper1.distanceToGo());
+     Serial.print(", curr_pos:"); Serial.println(stepper1.currentPosition());
+     
+     if (stepper1.distanceToGo() == 0)
 	    stepper1.moveTo(-stepper1.currentPosition());
      
-    if (stepper2.distanceToGo() == 0)
+     Serial.print("2: d_to_go:"); Serial.print(stepper2.distanceToGo());
+     Serial.print(", curr_pos:"); Serial.println(stepper2.currentPosition());
+     if (stepper2.distanceToGo() == 0)
 	    stepper2.moveTo(-stepper2.currentPosition());
     
     stepper1.run();
     stepper2.run();
+    
 }
