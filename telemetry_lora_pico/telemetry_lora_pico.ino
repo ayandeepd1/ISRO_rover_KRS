@@ -1,6 +1,6 @@
 #include <SPI.h>
 #include <LoRa.h>
-
+#define LED_BUILTIN 25
 #define lora_freq 443E6
 
 #define SCK 2
