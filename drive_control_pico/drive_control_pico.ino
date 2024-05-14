@@ -21,7 +21,7 @@ const int chanp[4]={chan1p, chan2p, chan3p, chan4p};
 const int chand[4]={chan1d, chan2d, chan3d, chan4d};
 const int chani[4]={in1, in2, in3, in4};
 
-int pw_speed=200;
+int pw_speed=70;
 bool dir_stat[4];
 
 void dr1_drive(bool pw, bool dr){
@@ -62,35 +62,35 @@ void set_dir(){
   dir_stat[3]=digitalRead(in4);
 }
 void run_forward(){
-  dr1_drive(1,0);
+  dr1_drive(1,0);  
+  dr2_drive(1,0);
+  
+  dr3_drive(1,0);
   dr4_drive(1,0);
 
-  dr2_drive(1,0);
-  dr3_drive(1,0);
-  
 }
 void run_backward(){
   dr1_drive(1,1);
-  dr4_drive(1,1);
-
   dr2_drive(1,1);
+  
   dr3_drive(1,1);
+  dr4_drive(1,1);
   
 }
 void run_rotate_left(){
   dr1_drive(1,0);
-  dr4_drive(1,0);
-
-  dr2_drive(1,1);
+  dr2_drive(1,0);
+  
   dr3_drive(1,1);
+  dr4_drive(1,1);
   
 }
 void run_rotate_right(){
   dr1_drive(1,1);
-  dr4_drive(1,1);
-
-  dr2_drive(1,0);
+  dr2_drive(1,1);
+  
   dr3_drive(1,0);
+  dr4_drive(1,0);
   
 }
 void stop_all(){

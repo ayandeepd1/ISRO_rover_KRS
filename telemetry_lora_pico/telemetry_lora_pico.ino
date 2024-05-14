@@ -1,6 +1,8 @@
 #include <SPI.h>
 #include <LoRa.h>
 
+#define lora_freq 443E6
+
 #define SCK 2
 #define MISO 4
 #define MOSI 3
@@ -13,15 +15,18 @@ char buff[100];
 int pack_rssi, i;
 volatile bool is_recv=0;
 
+long t1=0;
 //SPISettings spisettings(1000000);// MSBFIRST, SPI_MODE0);
+
 void onReceive(int packetSize) {
+  digitalWrite(LED_BUILTIN, HIGH);
   is_recv=1;
   for (i = 0; i < packetSize; i++) {
     buff[i]=(char)LoRa.read();
   }
   buff[i]=='\0';
   pack_rssi=LoRa.packetRssi();
-  
+  digitalWrite(LED_BUILTIN, LOW);
 }
 
 void lora_setup(){
@@ -33,19 +38,31 @@ void lora_setup(){
   LoRa.setSPI(SPI);
   LoRa.setPins(NSS, NRESET, DIO0);
   Serial.print("LoRa Receiver: ");
-  if (!LoRa.begin(443E6)) {
+  if (!LoRa.begin(lora_freq)) {
     Serial.println("Starting LoRa failed!");
     while (1);
   }
   LoRa.onReceive(onReceive);
   LoRa.dumpRegisters(Serial);
   LoRa.receive();
-  Serial.println("Ready");  
+  for(int i=0; i<5; i++){
+    pinMode(LED_BUILTIN,HIGH);
+    Serial.println("Ready");  
+    delay(100);
+    pinMode(LED_BUILTIN,LOW);
+    delay(100);
+  }
 }
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(1000000);
+  pinMode(LED_BUILTIN, OUTPUT);
   while (!Serial);  
+  for(int i=0; i<5; i++){
+    Serial.println("ready");
+    delay(100);
+  }
+    
 }
 void setup1() {
   delay(50);
@@ -55,9 +72,13 @@ void setup1() {
 void loop() {
   
   if(is_recv){
-    Serial.print("Received packet: \"");
-    Serial.print(buff);
-    Serial.printf("\" with RSSI %d\n", pack_rssi);
+    long t2=millis();
+    //Serial.print("Received packet: \"");
+    Serial.write(buff, i);
+    Serial.println();
+    //Serial.printf("\" with RSSI %d ", pack_rssi);
+    //Serial.printf("ping: %d\n", t2-t1);
+    t1=t2;
     is_recv=0;
   }
   

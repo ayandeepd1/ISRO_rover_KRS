@@ -17,7 +17,11 @@ void setup() {
       Serial.println(F("Lidar_Failed"));
       delay(200);
     }
-  lox.startRangeContinuous();
+  if (!lox.startRangeContinuous()) 
+    while(1){
+      Serial.println(F("Lidar_Failed"));
+      delay(200);
+    }  
   for(int i=0; i<5; i++){
     digitalWrite(13,1);
     Serial.println(F("Lidar_Ready")); 
@@ -27,26 +31,32 @@ void setup() {
   }
 }
 
-long tx=millis();
+long t_x=0;
   
 void loop() {
   if(!sleep_flag){
-    long t1=millis();
-    if(lox.isRangeComplete() && millis()-tx>range_interval) {
-      Serial.print(lox.readRange());Serial.print("\n");
-      tx=millis();    
+    long t_1=millis();
+    if(t_1-t_x>range_interval) {
+      VL53L0X_RangingMeasurementData_t measure;
+      lox.rangingTest(&measure, false);
+      if (measure.RangeStatus != 4  && measure.RangeMilliMeter<8180)
+        Serial.print(measure.RangeMilliMeter);
+      else
+        Serial.print("nan");
+      Serial.print("\n");
+      t_x=millis();    
     }
       
-    long t2=millis();
+    long t_2=millis();
     //Serial.print(" ");
-    //Serial.println(t2-t1);
+    //Serial.println(t_2-t_1);
   }
   if(Serial.available()>0){
       char c=Serial.read();
       switch(c){
         case 'h':Serial.print("Lidar_Sensor\n");break;
-        case 's':sleep_flag=1; break;
-        case 'w':sleep_flag=0; break;
+        case 's':sleep_flag=1; Serial.print("ok\n"); break;
+        case 'w':sleep_flag=0; Serial.print("ok\n"); break;
         case 'i':Serial.print("baud:1000000\n");
                  Serial.print("options: \n");
                  Serial.print("\th : show sensor name \n");
