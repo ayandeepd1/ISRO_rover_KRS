@@ -77,7 +77,7 @@ void run_backward(){
   dr4_drive(1,1);
   
 }
-void run_rotate_left(){
+void run_rotate_right(){
   dr1_drive(1,0);
   dr2_drive(1,0);
   
@@ -85,7 +85,7 @@ void run_rotate_left(){
   dr4_drive(1,1);
   
 }
-void run_rotate_right(){
+void run_rotate_left(){
   dr1_drive(1,1);
   dr2_drive(1,1);
   
@@ -102,6 +102,9 @@ void stop_all(){
 }
 
 void setup() {
+  Serial2.setRX(D5);
+  Serial2.setTX(D4);
+  Serial2.begin(115200);
   Serial.begin(115200);
   pinMode(LED, OUTPUT);
   for(int i=0; i<4; i++){
@@ -125,9 +128,43 @@ void loop() {
       case 'r':run_rotate_right();Serial.print("ok\n");break;
       case 'l':run_rotate_left();Serial.print("ok\n");break;
       case 's':stop_all();Serial.print("ok\n");break;    
+      case 'h':Serial.print("Lidar_Sensor\n");break;
+      case 'i':Serial.print("baud:1000000\n");
+                 Serial.print("options: \n");
+                 Serial.print("\th : show sensor name \n");
+                 Serial.print("\ts : sleep \n");
+                 Serial.print("\tw : wakeup \n");
+                 Serial.print("\ti : show this message\n");break;
+        case '\n':break;
+        case '\r':break;
+        default:Serial.print("error\n");
     }
     Serial.flush();
   }
+
+  if(Serial2.available()>0){
+    char c = Serial2.read();
+    //Serial.println(c);
+    switch(c){
+      case 'f':run_forward();Serial.print("ok\n");break;
+      case 'b':run_backward();Serial.print("ok\n");break;
+      case 'r':run_rotate_right();Serial.print("ok\n");break;
+      case 'l':run_rotate_left();Serial.print("ok\n");break;
+      case 's':stop_all();Serial.print("ok\n");break;    
+      case 'h':Serial.print("Lidar_Sensor\n");break;
+      case 'i':Serial.print("baud:1000000\n");
+                 Serial.print("options: \n");
+                 Serial.print("\th : shw sensor name \n");
+                 Serial.print("\ts : sleep \n");
+                 Serial.print("\tw : wakeup \n");
+                 Serial.print("\ti : show this message\n");break;
+        case '\n':break;
+        case '\r':break;
+        default:Serial.print("error\n");
+    }
+    Serial.flush();
+  }
+  
   
   digitalWrite(LED, LOW);
   

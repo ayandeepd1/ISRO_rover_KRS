@@ -13,6 +13,34 @@
 // Define some steppers and the pins the will use
 AccelStepper stepper_z(AccelStepper::DRIVER, STEPPERZ_STEP_PIN, STEPPERZ_DIR_PIN);
 AccelStepper stepper_y(AccelStepper::DRIVER, STEPPERY_STEP_PIN, STEPPERY_DIR_PIN);
+int stepper_status[]={0, gripper_max_limit};
+
+void move_stepper(int dvra, int dvrb, int dvrc){
+  if(dvra==-1){
+    stepper_y.moveTo(-100);
+  }      
+  else if(dvra==1){
+    stepper_y.moveTo(100);
+  }
+  else if(dvra==0)
+    stepper_y.moveTo(0);
+  
+  if(dvrb==1 && stepper_status[1]+100<gripper_max_limit){
+    stepper_status[1]+=100;
+    stepper_z.moveTo(stepper_status[1]);
+  }
+  else if(dvrc==1 && stepper_status[1]-100>-gripper_max_limit){
+    stepper_status[1]-=100;
+    stepper_z.moveTo(stepper_status[1]);
+  }
+  
+    
+  while(stepper_y.distanceToGo()!=0)
+      stepper_y.run();
+  while(stepper_z.distanceToGo()!=0)
+      stepper_z.run();
+  
+}
 
 void setup(){  
   Serial.begin(115200);
@@ -20,12 +48,12 @@ void setup(){
   stepper_z.setMaxSpeed(2000.0);
   stepper_z.setSpeed(2000.0);
   stepper_z.setAcceleration(1600.0);
-  stepper_z.moveTo(-gripper_max_limit);
+  //stepper_z.moveTo(-gripper_max_limit);
   
   stepper_y.setMaxSpeed(2000.0);
   stepper_y.setSpeed(2000.0);
   stepper_y.setAcceleration(1600.0);
-  stepper_y.moveTo(base_max_limit);
+  //stepper_y.moveTo(base_max_limit);
   
   //while (stepper1.distanceToGo() != 0)
       
@@ -59,7 +87,9 @@ void loop()
      if (stepper2.distanceToGo() == 0)
 	    stepper2.moveTo(-stepper2.currentPosition());
     */
-    stepper_y.run();
-    //stepper_z.run();
-      
+    move_stepper(0, -1, 1);
+    Serial.print(stepper_status[1]);
+    Serial.println();
+    delay(200);
+  
 }
